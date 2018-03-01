@@ -1,9 +1,3 @@
-const fs = require('fs');
+let myModule = require('./module');
 
-let result = fs.readFile(process.argv[2], (error, buffer) => {
-	if (error) {
-		return console.log('Error=', error);
-	}
-
-	console.log(buffer.toString().split('\n').length - 1);
-});
+myModule(process.argv[2], process.argv[3], (err, list) => {console.log(list)});
