@@ -1,14 +1,9 @@
 const fs = require('fs');
-const path = require('path');
 
-fs.readdir(process.argv[2], (err, list) => {
-	if (err) {
-		return console.log(err);
+let result = fs.readFile(process.argv[2], (error, buffer) => {
+	if (error) {
+		return console.log('Error=', error);
 	}
-	
-	list.forEach((fileName) => {
-		if (path.extname(fileName) === `.${process.argv[3]}`) {
-			console.log(fileName);
-		}
-	});
+
+	console.log(buffer.toString().split('\n').length - 1);
 });
