@@ -1,5 +1,14 @@
 const fs = require('fs');
+const path = require('path');
 
-let result = fs.readFileSync(process.argv[2]).toString().split('\n').length - 1;
-
-console.log(result);
+fs.readdir(process.argv[2], (err, list) => {
+	if (err) {
+		return console.log(err);
+	}
+	
+	list.forEach((fileName) => {
+		if (path.extname(fileName) === `.${process.argv[3]}`) {
+			console.log(fileName);
+		}
+	});
+});
