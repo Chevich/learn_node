@@ -1,9 +1,7 @@
 let sum = 0;
 
-process.argv.forEach((element, i) => {
-	if (i>1) {
-		sum += +element
-	}
-});
+for (let i = 2; i < process.argv.length; ++i) {
+	sum += +process.argv[i];
+}
 
 console.log(sum);
