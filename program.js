@@ -1,7 +1,7 @@
-const Path = require('path');
+const Fs = require('fs');
 const Hapi = require('hapi');
-const Handlebars = require('handlebars');
-const Vision = require('vision');
+const Path = require('path');
+const Rot13 = require('rot13-transform');
 
 const server = Hapi.Server({
 	host: 'localhost',
@@ -10,22 +10,13 @@ const server = Hapi.Server({
 
 (async () => {
 	try {
-		await server.register(Vision);
-
 		server.route({
 			path: '/',
 			method: 'GET',
-			handler: {
-				view: 'index.html'
+			handler: (request, response) => {
+				const thisFile = Fs.createReadStream(Path.join(__dirname, 'input.txt'));
+				return thisFile.pipe(Rot13());
 			}
-		});
-
-		server.views({
-			engines: {
-				html: Handlebars
-			},
-			path: Path.join(__dirname, 'templates'),
-			helpersPath: 'helpers',
 		});
 
 		await server.start();
