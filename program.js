@@ -6,9 +6,9 @@ const server = Hapi.Server({
 });
 
 server.route({
-	path: '/',
+	path: '/{name}',
 	method: 'GET',
-	handler: (request, h) => 'Hello World!'
+	handler: (request, h) => `Hello ${encodeURIComponent(request.params.name)} `
 });
 
 
