@@ -1,0 +1,24 @@
+{
+  "name": "learn_node",
+  "version": "1.0.0",
+  "description": "Learn the basics of node: asynchronous i/o, http.",
+  "main": "program.js",
+  "dependencies": {
+    "hapi": "^17.2.1",
+    "inert": "^5.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chevich/learn_node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chevich/learn_node/issues"
+  },
+  "homepage": "https://github.com/Chevich/learn_node#readme"
+}
