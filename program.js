@@ -1,11 +1,17 @@
-const fs = require('fs');
 const http = require('http');
 
 const server = http.createServer((request, response) => {
-		response.writeHead(200, { 'content-type': 'text/plain' });
-		fs.createReadStream(process.argv[3]).pipe(response);
+	if (request.method === 'POST'){
+		let data = '';
+		request.setEncoding('utf8');
+		request.on("data", (chunk) => data += chunk);
+		request.on('end', () => {
+			response.writeHead(200, {'Content-Type': 'text/plain'});
+			response.write(data.toUpperCase());
+			response.end();
+		});
 	}
-);
+});
 
 server.listen(process.argv[2]);
 
