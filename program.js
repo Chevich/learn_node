@@ -1,12 +1,10 @@
 let http = require('http');
+let bl = require('bl');
 
 http.get(process.argv[2], function(res) {
-	let data = '';
-	res.setEncoding('utf8');
-	res.on("data", (answer) => data += answer);
-	res.on('end', () => {
+	res.pipe(bl((err, data) => {
+		data = data.toString();
 		console.log(data.length);
 		console.log(data);
-	});
-	res.on('error', console.error);
+	}));
 }).on('error', console.error);
