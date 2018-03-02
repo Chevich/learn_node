@@ -4,6 +4,7 @@
   "description": "Learn the basics of node: asynchronous i/o, http.",
   "main": "program.js",
   "dependencies": {
+    "h2o2": "^8.0.0",
     "handlebars": "^4.0.11",
     "hapi": "^17.2.1",
     "inert": "^5.1.0",

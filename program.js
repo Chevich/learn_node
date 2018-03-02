@@ -1,7 +1,5 @@
-const Path = require('path');
 const Hapi = require('hapi');
-const Handlebars = require('handlebars');
-const Vision = require('vision');
+const H2o2 = require('h2o2');
 
 
 const server = Hapi.Server({
@@ -11,23 +9,18 @@ const server = Hapi.Server({
 
 (async () => {
 	try {
-		await server.register(Vision);
+		await server.register(H2o2);
 
 		server.route({
-			path: '/',
+			path: '/proxy',
 			method: 'GET',
 			handler: {
-				view: 'index.html'
+				proxy: {
+					host: '127.0.0.1',
+					port: 65535
+				}
 			}
 		});
-
-		server.views({
-			engines: {
-				html: Handlebars
-			},
-			path: Path.join(__dirname, 'templates')
-		});
-
 
 		await server.start();
 
