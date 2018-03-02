@@ -1,7 +1,5 @@
-const Fs = require('fs');
 const Hapi = require('hapi');
-const Path = require('path');
-const Rot13 = require('rot13-transform');
+const Joi = require('joi');
 
 const server = Hapi.Server({
 	host: 'localhost',
@@ -11,12 +9,17 @@ const server = Hapi.Server({
 (async () => {
 	try {
 		server.route({
-			path: '/',
+			path: '/chickens/{breed?}',
 			method: 'GET',
-			handler: (request, response) => {
-				const thisFile = Fs.createReadStream(Path.join(__dirname, 'input.txt'));
-				return thisFile.pipe(Rot13());
+			handler: (request, h) => `Hello ${encodeURIComponent(request.params.breed)} `,
+			config: {
+				validate: {
+					params: {
+						breed: Joi.string().required()
+					}
+				}
 			}
+
 		});
 
 		await server.start();
