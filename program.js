@@ -1,5 +1,5 @@
-let myModule = require('./module');
+let http = require('http');
 
-myModule(process.argv[2], process.argv[3], (err, array) => {
-	array.forEach((element) => console.log(element))
-});
+http.get(process.argv[2], function(res) {
+	res.setEncoding('utf8').on("data", console.log).on('error', console.error);
+}).on('error', console.error);
