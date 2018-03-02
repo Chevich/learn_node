@@ -1,35 +1,33 @@
+const Path = require('path');
 const Hapi = require('hapi');
-const Inert = require('inert');
+const Handlebars = require('handlebars');
+const Vision = require('vision');
+
 
 const server = Hapi.Server({
 	host: 'localhost',
 	port: Number(process.argv[2] || 8080),
-	routes: {
-		files: {
-			relativeTo: __dirname
-		}
-	}
 });
 
 (async () => {
 	try {
-		await server.register(Inert);
+		await server.register(Vision);
 
 		server.route({
 			path: '/',
 			method: 'GET',
 			handler: {
-				file: 'index.html'
+				view: 'index.html'
 			}
 		});
 
-		server.route({
-			path: "/foo/bar/baz/{filename}",
-			method: 'GET',
-			handler: {
-				file: (request) => `./public/${request.params.filename}`
-			}
+		server.views({
+			engines: {
+				html: Handlebars
+			},
+			path: Path.join(__dirname, 'templates')
 		});
+
 
 		await server.start();
 

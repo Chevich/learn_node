@@ -4,8 +4,10 @@
   "description": "Learn the basics of node: asynchronous i/o, http.",
   "main": "program.js",
   "dependencies": {
+    "handlebars": "^4.0.11",
     "hapi": "^17.2.1",
-    "inert": "^5.1.0"
+    "inert": "^5.1.0",
+    "vision": "^5.3.1"
   },
   "devDependencies": {},
   "scripts": {
