@@ -1,32 +1,23 @@
-const http = require('http');
-const url = require('url');
+const Hapi = require('hapi');
 
-const map = require('through2-map');
-
-const server = http.createServer((request, response) => {
-	if (request.method !== 'GET') {
-		response.writeHead(404, { 'Content-Type': 'application/json' });
-		response.end();
-	}
-	let s = url.parse(request.url, true);
-	let obj = {};
-
-	if (s.pathname === '/api/parsetime') {
-		let data = new Date(s.query.iso);
-		obj = {
-			hour: data.getHours(),
-			minute: data.getMinutes(),
-			second: data.getSeconds()
-		};
-	} else {
-		let data = new Date(s.query.iso);
-		obj = {
-			unixtime: data.getTime()
-		};
-	}
-	response.writeHead(200, { 'Content-Type': 'application/json' });
-	response.end(JSON.stringify(obj));
+const server = Hapi.Server({
+	host: 'localhost',
+	port: Number(process.argv[2] || 8080)
 });
 
-server.listen(process.argv[2]);
+server.route({
+	path: '/',
+	method: 'GET',
+	handler: (request, h) => 'Hello World!'
+});
 
+
+(async () => {
+	try {
+		await server.start();
+
+		console.log(`Server running at: ${server.info.uri}`);
+	} catch (error) {
+		console.log(error);
+	}
+})();
