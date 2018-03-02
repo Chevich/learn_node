@@ -1,10 +1,19 @@
 let http = require('http');
 let bl = require('bl');
 
-http.get(process.argv[2], function(res) {
-	res.pipe(bl((err, data) => {
-		data = data.toString();
-		console.log(data.length);
-		console.log(data);
-	}));
-}).on('error', console.error);
+let commonData = [];
+let count = 0;
+
+for (let i=2; i < process.argv.length; ++i) {
+	http.get(process.argv[i], function(res) {
+		res.pipe(bl((err, data) => {
+			commonData[i - 2] = data.toString();
+			count += 1;
+			if (count === 3) {
+				commonData.forEach((element) => console.log(element));
+			}
+		}));
+	}).on('error', console.error);
+}
+
+
