@@ -1,19 +1,15 @@
-let http = require('http');
-let bl = require('bl');
+const net = require('net');
 
-let commonData = [];
-let count = 0;
+const server = net.createServer((socket) => {
+		let date = new Date;
+		socket.write(`${date.getFullYear()}-${nullify(date.getMonth() + 1)}-${nullify(date.getDate())} ${nullify(date.getHours())}:${nullify(date.getMinutes())}\n`);
+		socket.end();
+	}
+);
 
-for (let i=2; i < process.argv.length; ++i) {
-	http.get(process.argv[i], function(res) {
-		res.pipe(bl((err, data) => {
-			commonData[i - 2] = data.toString();
-			count += 1;
-			if (count === 3) {
-				commonData.forEach((element) => console.log(element));
-			}
-		}));
-	}).on('error', console.error);
+function nullify(value) {
+	return (value < 10 ? '0' : '') + value.toString();
 }
 
+server.listen(process.argv[2]);
 
