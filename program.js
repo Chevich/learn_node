@@ -23,6 +23,14 @@ const server = Hapi.Server({
 			}
 		});
 
+		server.route({
+			path: "/foo/bar/baz/{filename}",
+			method: 'GET',
+			handler: {
+				file: (request) => `./public/${request.params.filename}`
+			}
+		});
+
 		await server.start();
 
 	} catch (error) {
