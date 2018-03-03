@@ -1,5 +1,4 @@
 const Hapi = require('hapi');
-const Joi = require('joi');
 
 const server = Hapi.Server({
 	host: 'localhost',
@@ -9,21 +8,37 @@ const server = Hapi.Server({
 (async () => {
 	try {
 		server.route({
-			path: '/login',
+			path: '/upload',
 			method: 'POST',
-			handler: (request, h) => 'login successful',
+			handler: (request, h) => {
+				return new Promise((resolve, reject) => {
+					let body = '';
+
+					request.payload.file.on('data', (data) => {
+						body += data
+					});
+
+					request.payload.file.on('end', () => {
+						let result = {
+							description: request.payload.description,
+							file: {
+								data: body,
+								filename: request.payload.file.hapi.filename,
+								headers: request.payload.file.hapi.headers,
+							}
+						};
+
+						return resolve(JSON.stringify(result));
+					});
+				});
+			},
 			config: {
-				validate: {
-					payload: Joi.object({
-						isGuest: Joi.boolean().required(),
-						username: Joi.string().when('isGuest', { is: false, then: Joi.required() }),
-						password: Joi.string().alphanum(),
-						accessToken: Joi.string().alphanum()
-					}).options({ allowUnknown: true }).without('password', 'accessToken')
+				payload: {
+					output: 'stream',
+					parse: true,
+					allow: 'multipart/form-data'
 				}
-
 			}
-
 		});
 
 		await server.start();
