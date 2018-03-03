@@ -9,14 +9,19 @@ const server = Hapi.Server({
 (async () => {
 	try {
 		server.route({
-			path: '/chickens/{breed?}',
-			method: 'GET',
-			handler: (request, h) => `Hello ${encodeURIComponent(request.params.breed)} `,
+			path: '/login',
+			method: 'POST',
+			handler: (request, h) => 'login successful',
 			config: {
 				validate: {
-					params: {
-						breed: Joi.string().required()
-					}
+					payload: Joi.object({
+						isGuest: Joi.boolean(),
+						username: Joi.string(),
+						accessToken: Joi.string().alphanum(),
+						password: Joi.string().alphanum(),
+					})
+						.with('isGuest', 'username')
+						.without('password', 'accessToken')
 				}
 			}
 
