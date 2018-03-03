@@ -1,52 +1,29 @@
 const Hapi = require('hapi');
-const Boom = require('boom');
+const Basic = require('hapi-auth-basic');
 
 const server = Hapi.Server({
 	host: 'localhost',
 	port: Number(process.argv[2] || 8080),
 });
 
+const validate = (request, username, password, h) => {
+	const result = username === 'hapi' && password === 'auth';
+	return { isValid: result, credentials: { name: username } };
+};
+
 (async () => {
 	try {
-		server.state('session', {
+		await server.register(Basic);
+
+		server.auth.strategy('simple', 'basic', { validate });
+		server.auth.default('simple');
+
+		server.route({
 			path: '/',
-			encoding: 'base64json',
-			ttl: 10,
-			domain: 'localhost',
-			isSameSite: false,
-			isSecure: false,
-			isHttpOnly: false
-		});
-
-
-		server.route({
-			path: '/set-cookie',
 			method: 'GET',
-			handler: (request, reply) => reply.response({message : 'success'}).state('session', {key : 'makemehapi'}),
-			config: {
-				state: {
-					parse: true,
-					failAction: 'log'
-				}
+			handler: (request, reply) => {
+				return reply.response({ message: 'welcome' });
 			}
-		});
-
-		server.route({
-			path: '/check-cookie',
-			method: 'GET',
-			handler: (request, h) => {
-				const cookie = request.state.session;
-				let result = null;
-
-				if (cookie) {
-					console.log('cookie = ', cookie);
-					result = {user : 'hapi'}
-				} else {
-					result = Boom.unauthorized('Missing authentication')
-
-				}
-				return result;
-			},
 		});
 
 		await server.start();
@@ -55,4 +32,5 @@ const server = Hapi.Server({
 		console.log(error);
 	}
 })();
+
 
