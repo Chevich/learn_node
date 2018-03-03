@@ -1,4 +1,5 @@
 const Hapi = require('hapi');
+const Boom = require('boom');
 
 const server = Hapi.Server({
 	host: 'localhost',
@@ -7,38 +8,45 @@ const server = Hapi.Server({
 
 (async () => {
 	try {
+		server.state('session', {
+			path: '/',
+			encoding: 'base64json',
+			ttl: 10,
+			domain: 'localhost',
+			isSameSite: false,
+			isSecure: false,
+			isHttpOnly: false
+		});
+
+
 		server.route({
-			path: '/upload',
-			method: 'POST',
-			handler: (request, h) => {
-				return new Promise((resolve, reject) => {
-					let body = '';
-
-					request.payload.file.on('data', (data) => {
-						body += data
-					});
-
-					request.payload.file.on('end', () => {
-						let result = {
-							description: request.payload.description,
-							file: {
-								data: body,
-								filename: request.payload.file.hapi.filename,
-								headers: request.payload.file.hapi.headers,
-							}
-						};
-
-						return resolve(JSON.stringify(result));
-					});
-				});
-			},
+			path: '/set-cookie',
+			method: 'GET',
+			handler: (request, reply) => reply.response({message : 'success'}).state('session', {key : 'makemehapi'}),
 			config: {
-				payload: {
-					output: 'stream',
+				state: {
 					parse: true,
-					allow: 'multipart/form-data'
+					failAction: 'log'
 				}
 			}
+		});
+
+		server.route({
+			path: '/check-cookie',
+			method: 'GET',
+			handler: (request, h) => {
+				const cookie = request.state.session;
+				let result = null;
+
+				if (cookie) {
+					console.log('cookie = ', cookie);
+					result = {user : 'hapi'}
+				} else {
+					result = Boom.unauthorized('Missing authentication')
+
+				}
+				return result;
+			},
 		});
 
 		await server.start();
