@@ -15,14 +15,13 @@ const server = Hapi.Server({
 			config: {
 				validate: {
 					payload: Joi.object({
-						isGuest: Joi.boolean(),
-						username: Joi.string(),
-						accessToken: Joi.string().alphanum(),
+						isGuest: Joi.boolean().required(),
+						username: Joi.string().when('isGuest', { is: false, then: Joi.required() }),
 						password: Joi.string().alphanum(),
-					})
-						.with('isGuest', 'username')
-						.without('password', 'accessToken')
+						accessToken: Joi.string().alphanum()
+					}).options({ allowUnknown: true }).without('password', 'accessToken')
 				}
+
 			}
 
 		});
