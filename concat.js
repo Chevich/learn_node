@@ -1,19 +1,25 @@
 const concat = require('concat-stream');
-// const http = require('http');
-//
-// const server = http.createServer(function (req, res) {
-// 	if (req.method === 'POST') {
-// 		req.pipe(concat(function (body) {
-// 			const obj = JSON.parse(body);
-// 			res.end(Object.keys(obj).join('\n'));
-// 		}));
-// 	}
-// 	else res.end();
-// });
-// server.listen(5000);
+const http = require('http');
+const fs = require('fs');
+const through = require('through2');
 
-function concatFunc(src){
-	console.log(src.toString().split('').reverse().join(''));
+
+function write(buffer, _, next) {
+	this.push(buffer.toString().toUpperCase());
+	next();
 }
 
-process.stdin.pipe(concat(concatFunc));
+function end(done){
+	done();
+}
+
+let upStream = through(write, end);
+
+const server = http.createServer(function (req, res) {
+	if (req.method === 'POST') {
+		req.pipe(upStream).pipe(res);
+	}
+	else res.end('beep boop');
+});
+server.listen(process.argv[2]);
+
