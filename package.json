@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Learn the basics of node: asynchronous i/o, http.",
   "main": "program.js",
-  "dependencies": {},
+  "dependencies": {
+    "concat-stream": "^1.6.1",
+    "split": "^1.0.1",
+    "through2": "^2.0.3"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
